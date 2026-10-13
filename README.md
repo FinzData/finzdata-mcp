@@ -2,63 +2,68 @@
 
 <!-- mcp-name: io.github.FinzData/finzdata-mcp -->
 
-US market data inside Claude, ChatGPT, Cursor and any MCP client.
+Research-grade US market data and server-side backtests for AI agents: Claude, ChatGPT, Gemini CLI, Cursor, Kimi, GLM and any MCP client.
 
-## What you get
+**Remote server:** `https://api.finzdata.com/mcp` (Streamable HTTP, MCP 2026-07-28, accepts 2025-06-18 clients)
+**Auth:** OAuth 2.1 with PKCE (sign in with your FinzData API key), or the header `Authorization: Bearer YOUR_API_KEY`
+**Free key:** https://finzdata.com/signin · Pricing: https://finzdata.com/pricing · Agent docs: https://api.finzdata.com/agents.md
 
-- prices_daily — daily OHLCV for US equities
-- cot — Commitments of Traders reports
-- cot_markets — available COT market codes
-- macro — 10,000+ US economic series from FRED (inflation, jobs, rates, credit, consumer spending)
-- macro_search — search macro series by keyword
-- short_interest — short interest and days to cover
-- insiders — insider transaction filings (Form 4)
-- fundamentals — raw SEC XBRL facts by concept
-- financial_statements — income statement, balance sheet and cash flow, quarterly or annual
-- company_profile — company overview, sector, description
-- earnings_dates — past earnings release dates and before/after-market timing
+## Why FinzData for agents
 
-## Free tier
+- **Survivorship-free.** Universes include every company that traded on a date, delisted names included.
+- **Point-in-time.** Every data tool takes `as_of`, so answers contain only what was public that day: fundamentals as filed, and macro series as first published (ALFRED vintages).
+- **Backtests run on the server.** Describe a strategy and get back CAGR, volatility, Sharpe, drawdown, turnover, a benchmark, an equity curve, a reproducible `run_id` and a deflated Sharpe ratio that counts every variant you tried.
 
-Every tool returns the last 12 months only. Older history (stocks back to 2000, every macro revision, 1-minute, 5-minute and hourly bars, 13F institutional holdings) comes with a history bundle: https://finzdata.com/pricing
+## Tools (all read-only)
 
-## Setup
+| Tool | What it returns |
+|---|---|
+| `search_datasets` / `describe_dataset` | The catalog, fields and coverage |
+| `get_universe` | Every US symbol trading on a date, or the 500/1000/3000 most-traded |
+| `get_bars` | Daily and 1-minute OHLCV, split-adjusted |
+| `get_fundamentals_pit` | Valuation and fundamentals as known on a date (P/E, EV/EBITDA, revenue, debt…) |
+| `get_macro_vintage` | FRED/ALFRED series exactly as published by a date |
+| `get_cot` | CFTC Commitments of Traders positioning |
+| `get_13f` | Institutional holdings from 13F filings |
+| `get_events` | Earnings dates, splits and economic releases |
+| `run_backtest` | Momentum, MA cross, factor or formula strategies, long-only or long/short |
+| `compare_runs` | Several backtests side by side |
 
-1. Get a free API key at https://api.finzdata.com/
-2. Install: `pip install finzdata-mcp`
-3. Add to your MCP client configuration:
+## Connect
 
-**Claude Desktop** (`claude_desktop_config.json`):
+**Claude:** add FinzData from the Claude connector directory, or add a custom connector with `https://api.finzdata.com/mcp`.
+
+**ChatGPT:** add the FinzData app from the ChatGPT directory, or add a connector in developer mode with the URL above.
+
+**Gemini CLI:**
+```bash
+export FINZDATA_API_KEY=your-key
+gemini extensions install https://github.com/FinzData/finzdata-mcp
+```
+
+**Cursor** (`.cursor/mcp.json`), **Windsurf, Cline, Kimi CLI, GLM / Z.ai coding tools and any client that takes a remote server:**
 ```json
 {
   "mcpServers": {
     "finzdata": {
-      "command": "finzdata-mcp",
-      "env": {
-        "FINZDATA_API_KEY": "your-key"
-      }
+      "url": "https://api.finzdata.com/mcp",
+      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
     }
   }
 }
 ```
 
-**Cursor** (`.cursor/mcp.json`): same JSON as above.
+**Clients that only run local (stdio) servers:** `pip install finzdata-mcp` (or `uvx finzdata-mcp`) with `FINZDATA_API_KEY` set. See [README.pypi.md](README.pypi.md).
 
-**No-install alternative**: `uvx finzdata-mcp`
+## Example prompts
 
-## Example questions
+- "Backtest 12-1 momentum on the 500 most-traded US stocks since 2010, monthly, top 50, 10 bps costs."
+- "What was the US unemployment rate for March 2020 as first reported?"
+- "How are managed-money traders positioned in gold futures?"
+- "Which institutions hold the most NVIDIA shares in the latest 13F quarter?"
 
-- Chart NVDA's daily closes over the past year
-- How are hedge funds positioned in gold futures?
-- Which large caps have the highest short interest?
-- How has US credit card debt changed this year?
-- Which insiders bought or sold NVDA stock this year?
+## Plans
 
-## Settings
+Free accounts cover the last 12 months, with 100 data calls and 5 backtests a day. Paid plans and prepaid credits ($0.001 per data call, $0.05 per backtest) unlock full history.
 
-- `FINZDATA_API_KEY` (required) — your FinzData API key
-- `FINZDATA_MCP_MAX_ROWS` (default 2000) — maximum rows returned per tool call
-
----
-
-Data, not investment advice. FinzData — Clean data. Real insights. Real alpha. https://finzdata.com
+Data, not investment advice. Support: info@finzdata.com · https://finzdata.com/support · Privacy: https://finzdata.com/privacy

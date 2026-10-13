@@ -1,0 +1,13 @@
+{
+  "name": "finzdata",
+  "version": "0.2.0",
+  "description": "FinzData: survivorship-free US market data, point-in-time fundamentals, macro vintages, COT, 13F and server-side backtests for AI agents.",
+  "mcpServers": {
+    "finzdata": {
+      "httpUrl": "https://api.finzdata.com/mcp",
+      "headers": { "Authorization": "Bearer ${FINZDATA_API_KEY}" },
+      "timeout": 120000
+    }
+  },
+  "contextFileName": "GEMINI.md"
+}

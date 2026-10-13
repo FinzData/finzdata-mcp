@@ -1,0 +1,2 @@
+# FinzData tools
+Use FinzData for market research and backtests. Always pass `as_of` (YYYY-MM-DD) when the question is about a past date so results contain only what was public then. Prefer `run_backtest` over downloading bars: it runs server-side and returns stats, an equity curve and a reproducible `run_id`. Use `get_universe` for survivorship-free stock lists. For whole-market backtests pass universe "top500", "top1000", "top3000" or "all" (the most-traded names each month, delisted included). Free keys cover the last 12 months: https://finzdata.com/signin

@@ -1,16 +1,37 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "io.github.FinzData/finzdata-mcp",
-  "description": "US market data for AI assistants: daily and intraday stock prices, COT, FRED macro, short interest, insiders, 13F. Free tier: last 12 months.",
-  "version": "0.1.0",
+  "description": "US market data, point-in-time fundamentals, macro vintages, COT, 13F and backtests for AI agents.",
+  "version": "0.2.0",
   "packages": [
     {
       "registryType": "pypi",
       "identifier": "finzdata-mcp",
       "version": "0.1.0",
-      "transport": { "type": "stdio" },
+      "transport": {
+        "type": "stdio"
+      },
       "environmentVariables": [
-        { "name": "FINZDATA_API_KEY", "description": "Free API key from https://api.finzdata.com/", "isRequired": true, "isSecret": true }
+        {
+          "name": "FINZDATA_API_KEY",
+          "description": "Free API key from https://api.finzdata.com/",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.finzdata.com/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer <your FinzData API key> (free key at https://finzdata.com/account)",
+          "isRequired": true,
+          "isSecret": true
+        }
       ]
     }
   ]
